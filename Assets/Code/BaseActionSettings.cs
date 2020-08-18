@@ -14,7 +14,7 @@ public enum ActionType
 [Serializable]
 public abstract class BaseActionSettings
 {
-    [SerializeField, HideInInspector] protected ActionType actionType = ActionType.Invalid;
+    [SerializeField] protected ActionType actionType = ActionType.Invalid;
 
     protected BaseActionSettings()
     {
@@ -47,7 +47,7 @@ public class MeleeAttackActionSettings : BaseActionSettings
 }
 
 [Serializable]
-public class RangedAttackActionSettings : BaseActionSettings
+public class RangedAttackActionSettings : MeleeAttackActionSettings
 {
     [SerializeField] private float range = 10.0f;
 
@@ -61,6 +61,7 @@ public class RangedAttackActionSettings : BaseActionSettings
 public class HealActionSettings : BaseActionSettings
 {
     [SerializeField] private int healQuantity = 10;
+    [SerializeField] private bool removesDiseases = true;
 
     public HealActionSettings() : base()
     {

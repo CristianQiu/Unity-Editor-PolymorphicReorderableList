@@ -6,16 +6,20 @@ using UnityEngine;
 [CustomEditor(typeof(BaseCharacter))]
 public class BaseCharacterEditor : Editor
 {
-    private ActionType addedAction = ActionType.Invalid;
+    private int MaxNumberOfActions = BaseCharacter.MaxNumberOfActions;
 
     private BaseCharacter targetChar;
 
     private SerializedProperty settingsListProp;
     private ReorderableList reordList;
 
+    // needed to save the state in case the user selects / deselects
+    private BaseCharacter.PerReorderableListElementState[] perReorderableListElementStates;
+
     private void OnEnable()
     {
         targetChar = (BaseCharacter)target;
+        perReorderableListElementStates = targetChar.PerReorderableListElementStates;
 
         settingsListProp = serializedObject.FindProperty("settings");
         reordList = new ReorderableList(serializedObject, settingsListProp, true, true, true, true);
@@ -40,40 +44,29 @@ public class BaseCharacterEditor : Editor
 
         EditorGUILayout.Space();
 
-        EditorGUILayout.LabelField("Edit actions", EditorStyles.boldLabel);
-
-        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-
-        addedAction = (ActionType)EditorGUILayout.EnumPopup("Action to add ", addedAction);
-
-        if (GUILayout.Button("Add action to the character"))
+        if (GUILayout.Button("Add some actions to the character"))
         {
             settingsListProp.ClearArray();
 
-            int rand = Random.Range(0, 8);
+            int rand = Random.Range((int)(MaxNumberOfActions / 2), MaxNumberOfActions);
 
             for (int i = 0; i < rand; i++)
             {
                 settingsListProp.InsertArrayElementAtIndex(i);
-
                 SerializedProperty indexProp = settingsListProp.GetArrayElementAtIndex(i);
 
-                if (i == 0)
+                if (i % 4 == 0)
                     indexProp.managedReferenceValue = new MeleeAttackActionSettings();
-                else
+                else if (i % 4 == 1)
                     indexProp.managedReferenceValue = new MovementActionSettings();
+                else if (i % 4 == 2)
+                    indexProp.managedReferenceValue = new RangedAttackActionSettings();
+                else
+                    indexProp.managedReferenceValue = new HealActionSettings();
             }
         }
 
-        for (int i = 0; i < settingsListProp.arraySize; i++)
-        {
-            SerializedProperty indexProp = settingsListProp.GetArrayElementAtIndex(i);
-            indexProp.serializedObject.ApplyModifiedProperties();
-        }
-
         serializedObject.ApplyModifiedProperties();
-
-        EditorGUILayout.EndVertical();
     }
 
     private void OnDrawReorderListElement(Rect rect, int index, bool isActive, bool isFocused)
@@ -85,30 +78,42 @@ public class BaseCharacterEditor : Editor
         ActionType actionType = (ActionType)(actionTypeParentProp.enumValueIndex - 1);
         string actionName = SplitStringByUpperCases(actionType.ToString());
 
-        Rect r = rect;
-        EditorGUI.LabelField(r, actionName);
-        //EditorGUI.DropShadowLabel(rect, actionName);
+        float height = 20.0f;
+        Rect foldOutRect = rect;
+        foldOutRect.x += 15.0f;
+        foldOutRect.height = 20.0f;
 
-        // this is efectively the same as serializedObject.GetIterator()...
-        SerializedProperty iteratorProp = parentProp.serializedObject.GetIterator();
+        bool clicked = EditorGUI.BeginFoldoutHeaderGroup(foldOutRect, true, new GUIContent(actionName));
+
+        if (clicked)
+            perReorderableListElementStates[index].ToggleFolded();
+
+        if (!perReorderableListElementStates[index].Unfolded)
+        {
+            perReorderableListElementStates[index].SetHeight(height);
+            EditorGUI.EndFoldoutHeaderGroup();
+            return;
+        }
 
         // get the following property in the array, if any
         int length = reordList.serializedProperty.arraySize;
         SerializedProperty nextProp = (length > 0 && index < length - 1) ? reordList.serializedProperty.GetArrayElementAtIndex(index + 1) : null;
 
-        // so we must start from the top and find the action, because I can't find a way to start
-        // doing it from the first array element
+        // this is efectively the same as serializedObject.GetIterator()...
+        SerializedProperty iteratorProp = parentProp.serializedObject.GetIterator();
+
+        // so start from the top and find the action, because I can't find a way to start doing it
+        // from the first array element
         while (iteratorProp.Next(true))
         {
-            // if we find this property it means is the first array element we found earlier
+            // if we find this property it means it is the first array element we found earlier
             if (EqualContents(parentProp, iteratorProp))
             {
                 int i = 1;
                 Rect newRect = rect;
-                //newRect.y += (i * EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
+                newRect.y += (i * EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
 
-                //EditorGUI.PropertyField(newRect, iteratorProp, true);
-                //i++;
+                height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
 
                 while (iteratorProp.Next(true))
                 {
@@ -120,49 +125,21 @@ public class BaseCharacterEditor : Editor
 
                     EditorGUI.PropertyField(newRect, iteratorProp, true);
                     i++;
+
+                    height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
                 }
 
+                perReorderableListElementStates[index].SetHeight(height);
                 break;
             }
         }
 
-        //EditorGUI.BeginVertical(EditorStyles.helpBox);
-
-        //EditorGUILayout.EndVertical();
+        EditorGUI.EndFoldoutHeaderGroup();
     }
 
     private float OnReorderListElementHeight(int index)
     {
-        SerializedProperty parentProp = reordList.serializedProperty.GetArrayElementAtIndex(index);
-
-        int length = reordList.serializedProperty.arraySize;
-        SerializedProperty nextProp = (length > 0 && index < length - 1) ? reordList.serializedProperty.GetArrayElementAtIndex(index + 1) : null;
-
-        SerializedProperty iteratorProp = parentProp.serializedObject.GetIterator();
-
-        float height = 0.0f;
-
-        while (iteratorProp.Next(true))
-        {
-            if (EqualContents(parentProp, iteratorProp))
-            {
-                height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-
-                while (iteratorProp.Next(true))
-                {
-                    if (EqualContents(nextProp, iteratorProp))
-                        break;
-
-                    height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                }
-
-                break;
-            }
-        }
-
-        //height += 2.0f * (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
-
-        return height;
+        return perReorderableListElementStates[index].Height;
     }
 
     private bool EqualContents(SerializedProperty a, SerializedProperty b)
