@@ -6,23 +6,28 @@ using UnityEngine;
 [CustomEditor(typeof(BaseCharacter))]
 public class BaseCharacterEditor : Editor
 {
-    private int MaxNumberOfActions = BaseCharacter.MaxNumberOfActions;
+    private int MaxNumberOfActions = 8;
+    private const float AdditionalSpaceMultiplier = 1.25f;
 
     private BaseCharacter targetChar;
 
     private SerializedProperty settingsListProp;
     private ReorderableList reordList;
 
-    // needed to save the state in case the user selects / deselects
-    private BaseCharacter.PerReorderableListElementState[] perReorderableListElementStates;
+    private GUIStyle headersStyle;
 
     private void OnEnable()
     {
         targetChar = (BaseCharacter)target;
-        perReorderableListElementStates = targetChar.PerReorderableListElementStates;
 
         settingsListProp = serializedObject.FindProperty("settings");
         reordList = new ReorderableList(serializedObject, settingsListProp, true, true, true, true);
+
+        headersStyle = new GUIStyle();
+        headersStyle.alignment = TextAnchor.MiddleLeft;
+        headersStyle.fontSize = 13;
+        headersStyle.normal.textColor = EditorGUIUtility.isProSkin ? new Color(0.8f, 0.8f, 0.8f, 1.0f) : new Color(0.2f, 0.2f, 0.2f, 1.0f);
+        headersStyle.fontStyle = FontStyle.Bold;
 
         reordList.drawElementCallback += OnDrawReorderListElement;
         reordList.elementHeightCallback += OnReorderListElementHeight;
@@ -78,22 +83,12 @@ public class BaseCharacterEditor : Editor
         ActionType actionType = (ActionType)(actionTypeParentProp.enumValueIndex - 1);
         string actionName = SplitStringByUpperCases(actionType.ToString());
 
-        float height = 20.0f;
-        Rect foldOutRect = rect;
-        foldOutRect.x += 15.0f;
-        foldOutRect.height = 20.0f;
+        Rect labelRect = rect;
+        labelRect.height = 20.0f;
 
-        bool clicked = EditorGUI.BeginFoldoutHeaderGroup(foldOutRect, true, new GUIContent(actionName));
+        EditorGUI.LabelField(labelRect, new GUIContent(actionName), headersStyle);
 
-        if (clicked)
-            perReorderableListElementStates[index].ToggleFolded();
-
-        if (!perReorderableListElementStates[index].Unfolded)
-        {
-            perReorderableListElementStates[index].SetHeight(height);
-            EditorGUI.EndFoldoutHeaderGroup();
-            return;
-        }
+        EditorGUI.indentLevel++;
 
         // get the following property in the array, if any
         int length = reordList.serializedProperty.arraySize;
@@ -109,37 +104,68 @@ public class BaseCharacterEditor : Editor
             // if we find this property it means it is the first array element we found earlier
             if (EqualContents(parentProp, iteratorProp))
             {
-                int i = 1;
-                Rect newRect = rect;
-                newRect.y += (i * EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
-
-                height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
-
+                int i = 0;
                 while (iteratorProp.Next(true))
                 {
                     if (EqualContents(nextProp, iteratorProp))
                         break;
 
-                    newRect = rect;
-                    newRect.y += (i * EditorGUIUtility.singleLineHeight + i * EditorGUIUtility.standardVerticalSpacing);
+                    if (EqualContents(actionTypeParentProp, iteratorProp))
+                        continue;
 
-                    EditorGUI.PropertyField(newRect, iteratorProp, true);
+                    float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
+                    rect.y += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * multiplier;
+                    EditorGUI.PropertyField(rect, iteratorProp, true);
                     i++;
-
-                    height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
                 }
 
-                perReorderableListElementStates[index].SetHeight(height);
                 break;
             }
         }
 
-        EditorGUI.EndFoldoutHeaderGroup();
+        EditorGUI.indentLevel--;
     }
 
     private float OnReorderListElementHeight(int index)
     {
-        return perReorderableListElementStates[index].Height;
+        int length = reordList.serializedProperty.arraySize;
+        SerializedProperty nextProp = (length > 0 && index < length - 1) ? reordList.serializedProperty.GetArrayElementAtIndex(index + 1) : null;
+
+        SerializedProperty parentProp = reordList.serializedProperty.GetArrayElementAtIndex(index);
+        SerializedProperty actionTypeParentProp = parentProp.FindPropertyRelative("actionType");
+
+        SerializedProperty iteratorProp = parentProp.serializedObject.GetIterator();
+
+        float height = 0.0f;
+
+        while (iteratorProp.Next(true))
+        {
+            if (EqualContents(parentProp, iteratorProp))
+            {
+                height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
+
+                int i = 0;
+                while (iteratorProp.Next(true))
+                {
+                    if (EqualContents(nextProp, iteratorProp))
+                    {
+                        height += (EditorGUIUtility.standardVerticalSpacing) * AdditionalSpaceMultiplier;
+                        break;
+                    }
+
+                    if (EqualContents(actionTypeParentProp, iteratorProp))
+                        continue;
+
+                    float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
+                    height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * multiplier;
+                    i++;
+                }
+
+                break;
+            }
+        }
+
+        return height;
     }
 
     private bool EqualContents(SerializedProperty a, SerializedProperty b)

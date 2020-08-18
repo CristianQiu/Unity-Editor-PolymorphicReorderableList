@@ -121,7 +121,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &338605481
+--- !u!1 &622613148
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -129,8 +129,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 338605483}
-  - component: {fileID: 338605482}
+  - component: {fileID: 622613150}
+  - component: {fileID: 622613149}
   m_Layer: 0
   m_Name: BaseCharacter 2
   m_TagString: Untagged
@@ -138,13 +138,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &338605482
+--- !u!114 &622613149
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 338605481}
+  m_GameObject: {fileID: 622613148}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 605ed0fdd16f46f498823934af930312, type: 3}
@@ -157,6 +157,7 @@ MonoBehaviour:
   - id: 3
   - id: 4
   - id: 5
+  - id: 6
   references:
     version: 1
     00000000:
@@ -165,6 +166,18 @@ MonoBehaviour:
         actionType: 1
         damage: 10
     00000001:
+      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 3
+        healQuantity: 10
+        removesDiseases: 1
+    00000002:
+      type: {class: RangedAttackActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 2
+        damage: 10
+        range: 10
+    00000003:
       type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 0
@@ -172,23 +185,12 @@ MonoBehaviour:
         acceleration: 16
         decelerationBoostWithRespectToAcceleration: 3
         turnToAnyAxisSmoothness: 0.33
-    00000002:
-      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 1
-        damage: 10
-    00000003:
+    00000004:
       type: {class: RangedAttackActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 2
         damage: 10
         range: 10
-    00000004:
-      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 3
-        healQuantity: 10
-        removesDiseases: 1
     00000005:
       type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
       data:
@@ -197,13 +199,18 @@ MonoBehaviour:
         acceleration: 16
         decelerationBoostWithRespectToAcceleration: 3
         turnToAnyAxisSmoothness: 0.33
---- !u!4 &338605483
+    00000006:
+      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 1
+        damage: 10
+--- !u!4 &622613150
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 338605481}
+  m_GameObject: {fileID: 622613148}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -386,7 +393,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1711010702
+--- !u!1 &1809048441
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -394,8 +401,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1711010704}
-  - component: {fileID: 1711010703}
+  - component: {fileID: 1809048443}
+  - component: {fileID: 1809048442}
   m_Layer: 0
   m_Name: BaseCharacter 1
   m_TagString: Untagged
@@ -403,13 +410,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1711010703
+--- !u!114 &1809048442
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1711010702}
+  m_GameObject: {fileID: 1809048441}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 605ed0fdd16f46f498823934af930312, type: 3}
@@ -423,11 +430,6 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 1
-        damage: 10
-    00000001:
       type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 0
@@ -435,6 +437,11 @@ MonoBehaviour:
         acceleration: 16
         decelerationBoostWithRespectToAcceleration: 3
         turnToAnyAxisSmoothness: 0.33
+    00000001:
+      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 1
+        damage: 10
     00000002:
       type: {class: RangedAttackActionSettings, ns: , asm: Assembly-CSharp}
       data:
@@ -447,13 +454,13 @@ MonoBehaviour:
         actionType: 3
         healQuantity: 10
         removesDiseases: 1
---- !u!4 &1711010704
+--- !u!4 &1809048443
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1711010702}
+  m_GameObject: {fileID: 1809048441}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
