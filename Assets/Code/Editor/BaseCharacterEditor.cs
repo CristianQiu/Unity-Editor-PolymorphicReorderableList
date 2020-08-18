@@ -6,7 +6,7 @@ using UnityEngine;
 [CustomEditor(typeof(BaseCharacter))]
 public class BaseCharacterEditor : Editor
 {
-    private int MaxNumberOfActions = 8;
+    private const int MaxNumberOfActions = 8;
     private const float AdditionalSpaceMultiplier = 1f;
 
     private BaseCharacter targetChar;
