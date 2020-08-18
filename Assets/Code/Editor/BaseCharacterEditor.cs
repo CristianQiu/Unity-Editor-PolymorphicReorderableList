@@ -7,7 +7,7 @@ using UnityEngine;
 public class BaseCharacterEditor : Editor
 {
     private int MaxNumberOfActions = 8;
-    private const float AdditionalSpaceMultiplier = 1.25f;
+    private const float AdditionalSpaceMultiplier = 1f;
 
     private BaseCharacter targetChar;
 
@@ -29,6 +29,7 @@ public class BaseCharacterEditor : Editor
         headersStyle.normal.textColor = EditorGUIUtility.isProSkin ? new Color(0.8f, 0.8f, 0.8f, 1.0f) : new Color(0.2f, 0.2f, 0.2f, 1.0f);
         headersStyle.fontStyle = FontStyle.Bold;
 
+        reordList.drawHeaderCallback += OnDrawReorderListHeader;
         reordList.drawElementCallback += OnDrawReorderListElement;
         reordList.elementHeightCallback += OnReorderListElementHeight;
     }
@@ -37,6 +38,7 @@ public class BaseCharacterEditor : Editor
     {
         reordList.drawElementCallback -= OnDrawReorderListElement;
         reordList.elementHeightCallback -= OnReorderListElementHeight;
+        reordList.drawHeaderCallback -= OnDrawReorderListHeader;
     }
 
     public override void OnInspectorGUI()
@@ -74,6 +76,11 @@ public class BaseCharacterEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 
+    private void OnDrawReorderListHeader(Rect rect)
+    {
+        EditorGUI.LabelField(rect, "Actions");
+    }
+
     private void OnDrawReorderListElement(Rect rect, int index, bool isActive, bool isFocused)
     {
         SerializedProperty parentProp = reordList.serializedProperty.GetArrayElementAtIndex(index);
@@ -86,7 +93,7 @@ public class BaseCharacterEditor : Editor
         Rect labelRect = rect;
         labelRect.height = 20.0f;
 
-        EditorGUI.LabelField(labelRect, new GUIContent(actionName), headersStyle);
+        EditorGUI.LabelField(labelRect, actionName, headersStyle);
 
         EditorGUI.indentLevel++;
 
@@ -149,7 +156,7 @@ public class BaseCharacterEditor : Editor
                 {
                     if (EqualContents(nextProp, iteratorProp))
                     {
-                        height += (EditorGUIUtility.standardVerticalSpacing) * AdditionalSpaceMultiplier;
+                        height += (EditorGUIUtility.standardVerticalSpacing) * AdditionalSpaceMultiplier * 1.25f;
                         break;
                     }
 
