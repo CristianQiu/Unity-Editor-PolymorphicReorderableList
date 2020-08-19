@@ -9,6 +9,8 @@ public enum ActionType
     MeleeAttack,
     RangedAttack,
     Heal,
+
+    Count
 }
 
 [Serializable]

@@ -155,22 +155,21 @@ MonoBehaviour:
   - id: 1
   - id: 2
   - id: 3
-  - id: 4
-  - id: 5
-  - id: 6
   references:
     version: 1
     00000000:
+      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 0
+        maxSpeed: 4.75
+        acceleration: 16
+        decelerationBoostWithRespectToAcceleration: 3
+        turnToAnyAxisSmoothness: 0.33
+    00000001:
       type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 1
         damage: 10
-    00000001:
-      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 3
-        healQuantity: 10
-        removesDiseases: 1
     00000002:
       type: {class: RangedAttackActionSettings, ns: , asm: Assembly-CSharp}
       data:
@@ -178,32 +177,11 @@ MonoBehaviour:
         damage: 10
         range: 10
     00000003:
-      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
+      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
       data:
-        actionType: 0
-        maxSpeed: 4.75
-        acceleration: 16
-        decelerationBoostWithRespectToAcceleration: 3
-        turnToAnyAxisSmoothness: 0.33
-    00000004:
-      type: {class: RangedAttackActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 2
-        damage: 10
-        range: 10
-    00000005:
-      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 0
-        maxSpeed: 4.75
-        acceleration: 16
-        decelerationBoostWithRespectToAcceleration: 3
-        turnToAnyAxisSmoothness: 0.33
-    00000006:
-      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 1
-        damage: 10
+        actionType: 3
+        healQuantity: 10
+        removesDiseases: 1
 --- !u!4 &622613150
 Transform:
   m_ObjectHideFlags: 0

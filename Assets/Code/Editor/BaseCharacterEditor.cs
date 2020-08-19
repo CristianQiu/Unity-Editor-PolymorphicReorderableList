@@ -6,32 +6,37 @@ using UnityEngine;
 [CustomEditor(typeof(BaseCharacter))]
 public class BaseCharacterEditor : Editor
 {
-    private const int MaxNumberOfActions = 8;
-    private const float AdditionalSpaceMultiplier = 1f;
+    #region Private Attributes
+
+    private const float AdditionalSpaceMultiplier = 1.0f;
+    private static readonly Color ProSkinTextColor = new Color(0.8f, 0.8f, 0.8f, 1.0f);
+    private static readonly Color PersonalSkinTextColor = new Color(0.8f, 0.8f, 0.8f, 1.0f);
 
     private BaseCharacter targetChar;
 
-    private SerializedProperty settingsListProp;
     private ReorderableList reordList;
 
     private GUIStyle headersStyle;
+
+    #endregion
+
+    #region Editor Methods
 
     private void OnEnable()
     {
         targetChar = (BaseCharacter)target;
 
-        settingsListProp = serializedObject.FindProperty("settings");
-        reordList = new ReorderableList(serializedObject, settingsListProp, true, true, true, true);
+        reordList = new ReorderableList(serializedObject, serializedObject.FindProperty("settings"), true, true, true, true);
 
         headersStyle = new GUIStyle();
         headersStyle.alignment = TextAnchor.MiddleLeft;
-        headersStyle.fontSize = 13;
-        headersStyle.normal.textColor = EditorGUIUtility.isProSkin ? new Color(0.8f, 0.8f, 0.8f, 1.0f) : new Color(0.2f, 0.2f, 0.2f, 1.0f);
+        headersStyle.normal.textColor = EditorGUIUtility.isProSkin ? ProSkinTextColor : PersonalSkinTextColor;
         headersStyle.fontStyle = FontStyle.Bold;
 
         reordList.drawHeaderCallback += OnDrawReorderListHeader;
         reordList.drawElementCallback += OnDrawReorderListElement;
         reordList.elementHeightCallback += OnReorderListElementHeight;
+        reordList.onAddDropdownCallback += OnReorderListAddDropdown;
     }
 
     private void OnDisable()
@@ -39,6 +44,7 @@ public class BaseCharacterEditor : Editor
         reordList.drawElementCallback -= OnDrawReorderListElement;
         reordList.elementHeightCallback -= OnReorderListElementHeight;
         reordList.drawHeaderCallback -= OnDrawReorderListHeader;
+        reordList.onAddDropdownCallback -= OnReorderListAddDropdown;
     }
 
     public override void OnInspectorGUI()
@@ -49,36 +55,16 @@ public class BaseCharacterEditor : Editor
 
         reordList.DoLayoutList();
 
-        EditorGUILayout.Space();
-
-        if (GUILayout.Button("Add some actions to the character"))
-        {
-            settingsListProp.ClearArray();
-
-            int rand = Random.Range((int)(MaxNumberOfActions / 2), MaxNumberOfActions);
-
-            for (int i = 0; i < rand; i++)
-            {
-                settingsListProp.InsertArrayElementAtIndex(i);
-                SerializedProperty indexProp = settingsListProp.GetArrayElementAtIndex(i);
-
-                if (i % 4 == 0)
-                    indexProp.managedReferenceValue = new MeleeAttackActionSettings();
-                else if (i % 4 == 1)
-                    indexProp.managedReferenceValue = new MovementActionSettings();
-                else if (i % 4 == 2)
-                    indexProp.managedReferenceValue = new RangedAttackActionSettings();
-                else
-                    indexProp.managedReferenceValue = new HealActionSettings();
-            }
-        }
-
         serializedObject.ApplyModifiedProperties();
     }
 
+    #endregion
+
+    #region ReorderableList Callbacks
+
     private void OnDrawReorderListHeader(Rect rect)
     {
-        EditorGUI.LabelField(rect, "Actions");
+        EditorGUI.LabelField(rect, "Actions settings");
     }
 
     private void OnDrawReorderListElement(Rect rect, int index, bool isActive, bool isFocused)
@@ -104,8 +90,8 @@ public class BaseCharacterEditor : Editor
         // this is efectively the same as serializedObject.GetIterator()...
         SerializedProperty iteratorProp = parentProp.serializedObject.GetIterator();
 
-        // so start from the top and find the action, because I can't find a way to start doing it
-        // from the first array element
+        // so start from the top and find the action, it seems there's no way to start doing it from
+        // the first array element
         while (iteratorProp.Next(true))
         {
             // if we find this property it means it is the first array element we found earlier
@@ -155,10 +141,7 @@ public class BaseCharacterEditor : Editor
                 while (iteratorProp.Next(true))
                 {
                     if (EqualContents(nextProp, iteratorProp))
-                    {
-                        height += (EditorGUIUtility.standardVerticalSpacing) * AdditionalSpaceMultiplier * 1.25f;
                         break;
-                    }
 
                     if (EqualContents(actionTypeParentProp, iteratorProp))
                         continue;
@@ -174,6 +157,54 @@ public class BaseCharacterEditor : Editor
 
         return height;
     }
+
+    private void OnReorderListAddDropdown(Rect buttonRect, ReorderableList list)
+    {
+        GenericMenu menu = new GenericMenu();
+
+        for (int i = 0; i < (int)ActionType.Count; i++)
+        {
+            string actionName = ((ActionType)i).ToString();
+            menu.AddItem(new GUIContent(actionName), false, OnAddItemFromDropdown, (object)((ActionType)i));
+        }
+
+        menu.ShowAsContext();
+    }
+
+    private void OnAddItemFromDropdown(object o)
+    {
+        ActionType action = (ActionType)o;
+
+        int last = reordList.serializedProperty.arraySize;
+        reordList.serializedProperty.InsertArrayElementAtIndex(last);
+
+        SerializedProperty lastProp = reordList.serializedProperty.GetArrayElementAtIndex(last);
+
+        switch (action)
+        {
+            case ActionType.Movement:
+                lastProp.managedReferenceValue = new MovementActionSettings();
+                break;
+
+            case ActionType.MeleeAttack:
+                lastProp.managedReferenceValue = new MeleeAttackActionSettings();
+                break;
+
+            case ActionType.RangedAttack:
+                lastProp.managedReferenceValue = new RangedAttackActionSettings();
+                break;
+
+            case ActionType.Heal:
+                lastProp.managedReferenceValue = new HealActionSettings();
+                break;
+        }
+
+        serializedObject.ApplyModifiedProperties();
+    }
+
+    #endregion
+
+    #region Helper Methods
 
     private bool EqualContents(SerializedProperty a, SerializedProperty b)
     {
@@ -195,4 +226,6 @@ public class BaseCharacterEditor : Editor
 
         return toSplitString;
     }
+
+    #endregion
 }
