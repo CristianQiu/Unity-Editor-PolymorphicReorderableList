@@ -49,8 +49,6 @@ public class BaseCharacterEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        base.OnInspectorGUI();
-
         serializedObject.Update();
 
         reordList.DoLayoutList();
@@ -87,33 +85,23 @@ public class BaseCharacterEditor : Editor
         int length = reordList.serializedProperty.arraySize;
         SerializedProperty nextProp = (length > 0 && index < length - 1) ? reordList.serializedProperty.GetArrayElementAtIndex(index + 1) : null;
 
-        // this is efectively the same as serializedObject.GetIterator()...
-        SerializedProperty iteratorProp = parentProp.serializedObject.GetIterator();
+        SerializedProperty iteratorProp = parentProp;
 
-        // so start from the top and find the action, it seems there's no way to start doing it from
-        // the first array element
+        int i = 0;
         while (iteratorProp.Next(true))
         {
-            // if we find this property it means it is the first array element we found earlier
-            if (EqualContents(parentProp, iteratorProp))
-            {
-                int i = 0;
-                while (iteratorProp.Next(true))
-                {
-                    if (EqualContents(nextProp, iteratorProp))
-                        break;
-
-                    if (EqualContents(actionTypeParentProp, iteratorProp))
-                        continue;
-
-                    float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
-                    rect.y += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * multiplier;
-                    EditorGUI.PropertyField(rect, iteratorProp, true);
-                    i++;
-                }
-
+            // go until the next property in the array
+            if (EqualContents(nextProp, iteratorProp))
                 break;
-            }
+
+            // skip displaying the enum dropdown
+            if (EqualContents(actionTypeParentProp, iteratorProp))
+                continue;
+
+            float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
+            rect.y += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * multiplier;
+            EditorGUI.PropertyField(rect, iteratorProp, true);
+            i++;
         }
 
         EditorGUI.indentLevel--;
@@ -127,32 +115,24 @@ public class BaseCharacterEditor : Editor
         SerializedProperty parentProp = reordList.serializedProperty.GetArrayElementAtIndex(index);
         SerializedProperty actionTypeParentProp = parentProp.FindPropertyRelative("actionType");
 
-        SerializedProperty iteratorProp = parentProp.serializedObject.GetIterator();
+        SerializedProperty iteratorProp = parentProp;
 
         float height = 0.0f;
 
+        height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
+
+        int i = 0;
         while (iteratorProp.Next(true))
         {
-            if (EqualContents(parentProp, iteratorProp))
-            {
-                height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
-
-                int i = 0;
-                while (iteratorProp.Next(true))
-                {
-                    if (EqualContents(nextProp, iteratorProp))
-                        break;
-
-                    if (EqualContents(actionTypeParentProp, iteratorProp))
-                        continue;
-
-                    float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
-                    height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * multiplier;
-                    i++;
-                }
-
+            if (EqualContents(nextProp, iteratorProp))
                 break;
-            }
+
+            if (EqualContents(actionTypeParentProp, iteratorProp))
+                continue;
+
+            float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
+            height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * multiplier;
+            i++;
         }
 
         return height;
