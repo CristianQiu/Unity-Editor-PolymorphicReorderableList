@@ -117,9 +117,7 @@ public class BaseCharacterEditor : Editor
 
         SerializedProperty iteratorProp = parentProp;
 
-        float height = 0.0f;
-
-        height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
+        float height = (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
 
         int i = 0;
         while (iteratorProp.Next(true))
