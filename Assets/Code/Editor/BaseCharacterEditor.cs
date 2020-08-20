@@ -10,7 +10,7 @@ public class BaseCharacterEditor : Editor
 
     private const float AdditionalSpaceMultiplier = 1.0f;
     private static readonly Color ProSkinTextColor = new Color(0.8f, 0.8f, 0.8f, 1.0f);
-    private static readonly Color PersonalSkinTextColor = new Color(0.8f, 0.8f, 0.8f, 1.0f);
+    private static readonly Color PersonalSkinTextColor = new Color(0.2f, 0.2f, 0.2f, 1.0f);
 
     private BaseCharacter targetChar;
 
