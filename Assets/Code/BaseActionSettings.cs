@@ -16,7 +16,7 @@ public enum ActionType
 [Serializable]
 public abstract class BaseActionSettings
 {
-    [SerializeField] protected ActionType actionType = ActionType.Invalid;
+    [SerializeField, HideInInspector] protected ActionType actionType = ActionType.Invalid;
 
     protected BaseActionSettings()
     {

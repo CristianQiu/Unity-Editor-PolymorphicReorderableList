@@ -67,12 +67,13 @@ public class BaseCharacterEditor : Editor
 
     private void OnDrawReorderListElement(Rect rect, int index, bool isActive, bool isFocused)
     {
-        SerializedProperty parentProp = reordList.serializedProperty.GetArrayElementAtIndex(index);
-        SerializedProperty actionTypeParentProp = parentProp.FindPropertyRelative("actionType");
+        if (reordList.serializedProperty.arraySize <= 0)
+            return;
 
-        // substract 1 because the "Invalid" one shifts the value index by 1
-        ActionType actionType = (ActionType)(actionTypeParentProp.enumValueIndex - 1);
-        string actionName = SplitStringByUpperCases(actionType.ToString());
+        SerializedProperty iteratorProp = reordList.serializedProperty.GetArrayElementAtIndex(index);
+
+        SerializedProperty actionTypeParentProp = iteratorProp.FindPropertyRelative("actionType");
+        string actionName = actionTypeParentProp.enumDisplayNames[actionTypeParentProp.enumValueIndex];
 
         Rect labelRect = rect;
         labelRect.height = 20.0f;
@@ -85,21 +86,15 @@ public class BaseCharacterEditor : Editor
         int length = reordList.serializedProperty.arraySize;
         SerializedProperty nextProp = (length > 0 && index < length - 1) ? reordList.serializedProperty.GetArrayElementAtIndex(index + 1) : null;
 
-        SerializedProperty iteratorProp = parentProp;
-
         int i = 0;
-        while (iteratorProp.Next(true))
+        while (iteratorProp.NextVisible(true))
         {
             // go until the next property in the array
             if (EqualContents(nextProp, iteratorProp))
                 break;
 
-            // skip displaying the enum dropdown
-            if (EqualContents(actionTypeParentProp, iteratorProp))
-                continue;
-
             float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
-            rect.y += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * multiplier;
+            rect.y += GetDefaultSpaceBetweenElements() * multiplier;
             EditorGUI.PropertyField(rect, iteratorProp, true);
             i++;
         }
@@ -109,27 +104,24 @@ public class BaseCharacterEditor : Editor
 
     private float OnReorderListElementHeight(int index)
     {
+        if (reordList.serializedProperty.arraySize <= 0)
+            return 0.0f;
+
         int length = reordList.serializedProperty.arraySize;
+
         SerializedProperty nextProp = (length > 0 && index < length - 1) ? reordList.serializedProperty.GetArrayElementAtIndex(index + 1) : null;
+        SerializedProperty iteratorProp = reordList.serializedProperty.GetArrayElementAtIndex(index);
 
-        SerializedProperty parentProp = reordList.serializedProperty.GetArrayElementAtIndex(index);
-        SerializedProperty actionTypeParentProp = parentProp.FindPropertyRelative("actionType");
-
-        SerializedProperty iteratorProp = parentProp;
-
-        float height = (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing);
+        float height = GetDefaultSpaceBetweenElements();
 
         int i = 0;
-        while (iteratorProp.Next(true))
+        while (iteratorProp.NextVisible(true))
         {
             if (EqualContents(nextProp, iteratorProp))
                 break;
 
-            if (EqualContents(actionTypeParentProp, iteratorProp))
-                continue;
-
             float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
-            height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * multiplier;
+            height += GetDefaultSpaceBetweenElements() * multiplier;
             i++;
         }
 
@@ -143,6 +135,8 @@ public class BaseCharacterEditor : Editor
         for (int i = 0; i < (int)ActionType.Count; i++)
         {
             string actionName = ((ActionType)i).ToString();
+            actionName = SplitStringByUpperCases(actionName);
+
             menu.AddItem(new GUIContent(actionName), false, OnAddItemFromDropdown, (object)((ActionType)i));
         }
 
@@ -183,6 +177,11 @@ public class BaseCharacterEditor : Editor
     #endregion
 
     #region Helper Methods
+
+    private float GetDefaultSpaceBetweenElements()
+    {
+        return EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+    }
 
     private bool EqualContents(SerializedProperty a, SerializedProperty b)
     {
