@@ -12,6 +12,9 @@ public class BaseCharacterEditor : Editor
     private static readonly Color ProSkinTextColor = new Color(0.8f, 0.8f, 0.8f, 1.0f);
     private static readonly Color PersonalSkinTextColor = new Color(0.2f, 0.2f, 0.2f, 1.0f);
 
+    private static readonly Color ProSkinSelectionBgColor = new Color(44.0f / 255.0f, 93.0f / 255.0f, 135.0f / 255.0f, 1.0f);
+    private static readonly Color PersonalSkinSelectionBgColor = new Color(58.0f / 255.0f, 114.0f / 255.0f, 176.0f / 255.0f, 1.0f);
+
     private BaseCharacter targetChar;
 
     private ReorderableList reordList;
@@ -35,6 +38,7 @@ public class BaseCharacterEditor : Editor
 
         reordList.drawHeaderCallback += OnDrawReorderListHeader;
         reordList.drawElementCallback += OnDrawReorderListElement;
+        reordList.drawElementBackgroundCallback += OnDrawReorderListBg;
         reordList.elementHeightCallback += OnReorderListElementHeight;
         reordList.onAddDropdownCallback += OnReorderListAddDropdown;
     }
@@ -43,6 +47,7 @@ public class BaseCharacterEditor : Editor
     {
         reordList.drawElementCallback -= OnDrawReorderListElement;
         reordList.elementHeightCallback -= OnReorderListElementHeight;
+        reordList.drawElementBackgroundCallback -= OnDrawReorderListBg;
         reordList.drawHeaderCallback -= OnDrawReorderListHeader;
         reordList.onAddDropdownCallback -= OnReorderListAddDropdown;
     }
@@ -67,7 +72,9 @@ public class BaseCharacterEditor : Editor
 
     private void OnDrawReorderListElement(Rect rect, int index, bool isActive, bool isFocused)
     {
-        if (reordList.serializedProperty.arraySize <= 0)
+        int length = reordList.serializedProperty.arraySize;
+
+        if (length <= 0)
             return;
 
         SerializedProperty iteratorProp = reordList.serializedProperty.GetArrayElementAtIndex(index);
@@ -83,7 +90,6 @@ public class BaseCharacterEditor : Editor
         EditorGUI.indentLevel++;
 
         // get the following property in the array, if any
-        int length = reordList.serializedProperty.arraySize;
         SerializedProperty nextProp = (length > 0 && index < length - 1) ? reordList.serializedProperty.GetArrayElementAtIndex(index + 1) : null;
 
         int i = 0;
@@ -102,12 +108,24 @@ public class BaseCharacterEditor : Editor
         EditorGUI.indentLevel--;
     }
 
+    private void OnDrawReorderListBg(Rect rect, int index, bool isActive, bool isFocused)
+    {
+        if (isFocused && isActive)
+        {
+            float height = OnReorderListElementHeight(index);
+            rect.height = height;
+
+            Color color = EditorGUIUtility.isProSkin ? ProSkinSelectionBgColor : PersonalSkinSelectionBgColor;
+            EditorGUI.DrawRect(rect, color);
+        }
+    }
+
     private float OnReorderListElementHeight(int index)
     {
-        if (reordList.serializedProperty.arraySize <= 0)
-            return 0.0f;
-
         int length = reordList.serializedProperty.arraySize;
+
+        if (length <= 0)
+            return 0.0f;
 
         SerializedProperty nextProp = (length > 0 && index < length - 1) ? reordList.serializedProperty.GetArrayElementAtIndex(index + 1) : null;
         SerializedProperty iteratorProp = reordList.serializedProperty.GetArrayElementAtIndex(index);
@@ -137,6 +155,7 @@ public class BaseCharacterEditor : Editor
             string actionName = ((ActionType)i).ToString();
             actionName = SplitStringByUpperCases(actionName);
 
+            // Note: I believe there's a way to not depend on the enum and do it entirely through reflection
             menu.AddItem(new GUIContent(actionName), false, OnAddItemFromDropdown, (object)((ActionType)i));
         }
 
