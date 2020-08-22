@@ -89,20 +89,17 @@ public class BaseCharacterEditor : Editor
 
         EditorGUI.indentLevel++;
 
-        // get the following property in the array, if any
-        SerializedProperty nextProp = (length > 0 && index < length - 1) ? reordList.serializedProperty.GetArrayElementAtIndex(index + 1) : null;
+        SerializedProperty endProp = iteratorProp.GetEndProperty();
 
         int i = 0;
-        while (iteratorProp.NextVisible(true))
+        while (iteratorProp.NextVisible(true) && !EqualContents(endProp, iteratorProp))
         {
-            // go until the next property in the array
-            if (EqualContents(nextProp, iteratorProp))
-                break;
-
             float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
             rect.y += GetDefaultSpaceBetweenElements() * multiplier;
             rect.height = EditorGUIUtility.singleLineHeight;
+
             EditorGUI.PropertyField(rect, iteratorProp, true);
+
             i++;
         }
 
@@ -128,17 +125,14 @@ public class BaseCharacterEditor : Editor
         if (length <= 0)
             return 0.0f;
 
-        SerializedProperty nextProp = (length > 0 && index < length - 1) ? reordList.serializedProperty.GetArrayElementAtIndex(index + 1) : null;
         SerializedProperty iteratorProp = reordList.serializedProperty.GetArrayElementAtIndex(index);
+        SerializedProperty endProp = iteratorProp.GetEndProperty();
 
         float height = GetDefaultSpaceBetweenElements();
 
         int i = 0;
-        while (iteratorProp.NextVisible(true))
+        while (iteratorProp.NextVisible(true) && !EqualContents(endProp, iteratorProp))
         {
-            if (EqualContents(nextProp, iteratorProp))
-                break;
-
             float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
             height += GetDefaultSpaceBetweenElements() * multiplier;
             i++;
@@ -154,7 +148,7 @@ public class BaseCharacterEditor : Editor
         for (int i = 0; i < (int)ActionType.Count; i++)
         {
             string actionName = ((ActionType)i).ToString();
-            actionName = SplitStringByUpperCases(actionName);
+            InsertSpaceBeforeCaps(ref actionName);
 
             // Note: I believe there's a way to not depend on the enum and do it entirely through reflection
             menu.AddItem(new GUIContent(actionName), false, OnAddItemFromDropdown, (object)((ActionType)i));
@@ -208,20 +202,18 @@ public class BaseCharacterEditor : Editor
         return SerializedProperty.EqualContents(a, b);
     }
 
-    private string SplitStringByUpperCases(string toSplitString)
+    private void InsertSpaceBeforeCaps(ref string theString)
     {
-        for (int i = 0; i < toSplitString.Length; i++)
+        for (int i = 0; i < theString.Length; i++)
         {
-            char currChar = toSplitString[i];
+            char currChar = theString[i];
 
             if (char.IsUpper(currChar))
             {
-                toSplitString = toSplitString.Insert(i, " ");
+                theString = theString.Insert(i, " ");
                 i++;
             }
         }
-
-        return toSplitString;
     }
 
     #endregion

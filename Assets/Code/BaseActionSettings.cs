@@ -26,7 +26,7 @@ public abstract class BaseActionSettings
 [Serializable]
 public class MovementActionSettings : BaseActionSettings
 {
-    [SerializeField, Range(0.0f, 1.0f)] private float maxSpeed = 4.75f;
+    [SerializeField, Range(0.0f, 5.0f)] private float maxSpeed = 4.75f;
     [SerializeField] private float acceleration = 16.0f;
     [SerializeField] private float decelerationBoostWithRespectToAcceleration = 3.0f;
     [SerializeField] private float turnToAnyAxisSmoothness = 0.33f;

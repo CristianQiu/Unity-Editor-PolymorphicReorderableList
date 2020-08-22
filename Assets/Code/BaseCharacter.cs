@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class BaseCharacter : MonoBehaviour
+public abstract class BaseCharacter : MonoBehaviour
 {
     [SerializeReference] private List<BaseActionSettings> settings;
 }
