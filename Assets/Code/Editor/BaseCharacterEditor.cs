@@ -3,7 +3,7 @@ using UnityEditorInternal;
 using UnityEngine;
 
 [CanEditMultipleObjects]
-[CustomEditor(typeof(BaseCharacter))]
+[CustomEditor(typeof(BaseCharacter), true)]
 public class BaseCharacterEditor : Editor
 {
     #region Private Attributes
@@ -101,6 +101,7 @@ public class BaseCharacterEditor : Editor
 
             float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
             rect.y += GetDefaultSpaceBetweenElements() * multiplier;
+            rect.height = EditorGUIUtility.singleLineHeight;
             EditorGUI.PropertyField(rect, iteratorProp, true);
             i++;
         }
