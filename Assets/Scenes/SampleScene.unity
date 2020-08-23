@@ -339,13 +339,11 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
+      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
       data:
-        actionType: 0
-        maxSpeed: 4.75
-        acceleration: 16
-        decelerationBoostWithRespectToAcceleration: 3
-        turnToAnyAxisSmoothness: 0.33
+        actionType: 3
+        healQuantity: 24
+        removesDiseases: 1
     00000001:
       type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
       data:
@@ -361,10 +359,11 @@ MonoBehaviour:
         decelerationBoostWithRespectToAcceleration: 3
         turnToAnyAxisSmoothness: 0.33
     00000003:
-      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
+      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
       data:
-        actionType: 1
-        damage: 10
+        actionType: 3
+        healQuantity: 10
+        removesDiseases: 1
     00000004:
       type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
       data:
@@ -374,17 +373,15 @@ MonoBehaviour:
         decelerationBoostWithRespectToAcceleration: 3
         turnToAnyAxisSmoothness: 0.33
     00000005:
-      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
+      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
       data:
-        actionType: 3
-        healQuantity: 10
-        removesDiseases: 1
+        actionType: 1
+        damage: 10
     00000006:
-      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
+      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
       data:
-        actionType: 3
-        healQuantity: 10
-        removesDiseases: 1
+        actionType: 1
+        damage: 10
     00000007:
       type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
       data:
@@ -394,16 +391,19 @@ MonoBehaviour:
         decelerationBoostWithRespectToAcceleration: 3
         turnToAnyAxisSmoothness: 0.33
     00000008:
-      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 1
-        damage: 10
-    00000009:
       type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 3
-        healQuantity: 24
+        healQuantity: 10
         removesDiseases: 1
+    00000009:
+      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 0
+        maxSpeed: 4.75
+        acceleration: 16
+        decelerationBoostWithRespectToAcceleration: 3
+        turnToAnyAxisSmoothness: 0.33
 --- !u!4 &1974982489
 Transform:
   m_ObjectHideFlags: 0
