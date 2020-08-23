@@ -1,4 +1,8 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
@@ -55,6 +59,8 @@ public class BaseCharacterEditor : Editor
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
+
+        DrawDefaultInspector();
 
         reordList.DoLayoutList();
 
@@ -144,46 +150,30 @@ public class BaseCharacterEditor : Editor
     private void OnReorderListAddDropdown(Rect buttonRect, ReorderableList list)
     {
         GenericMenu menu = new GenericMenu();
+        List<Type> showTypes = GetNonAbstractTypesSubclassOf<BaseActionSettings>();
 
-        for (int i = 0; i < (int)ActionType.Count; i++)
+        for (int i = 0; i < showTypes.Count; i++)
         {
-            string actionName = ((ActionType)i).ToString();
+            Type type = showTypes[i];
+
+            string actionName = showTypes[i].Name;
             InsertSpaceBeforeCaps(ref actionName);
 
-            // Note: I believe there's a way to not depend on the enum and do it entirely through reflection
-            menu.AddItem(new GUIContent(actionName), false, OnAddItemFromDropdown, (object)((ActionType)i));
+            menu.AddItem(new GUIContent(actionName), false, OnAddItemFromDropdown, (object)type);
         }
 
         menu.ShowAsContext();
     }
 
-    private void OnAddItemFromDropdown(object o)
+    private void OnAddItemFromDropdown(object obj)
     {
-        ActionType action = (ActionType)o;
+        Type settingsType = (Type)obj;
 
         int last = reordList.serializedProperty.arraySize;
         reordList.serializedProperty.InsertArrayElementAtIndex(last);
 
         SerializedProperty lastProp = reordList.serializedProperty.GetArrayElementAtIndex(last);
-
-        switch (action)
-        {
-            case ActionType.Movement:
-                lastProp.managedReferenceValue = new MovementActionSettings();
-                break;
-
-            case ActionType.MeleeAttack:
-                lastProp.managedReferenceValue = new MeleeAttackActionSettings();
-                break;
-
-            case ActionType.RangedAttack:
-                lastProp.managedReferenceValue = new RangedAttackActionSettings();
-                break;
-
-            case ActionType.Heal:
-                lastProp.managedReferenceValue = new HealActionSettings();
-                break;
-        }
+        lastProp.managedReferenceValue = Activator.CreateInstance(settingsType);
 
         serializedObject.ApplyModifiedProperties();
     }
@@ -216,5 +206,23 @@ public class BaseCharacterEditor : Editor
         }
     }
 
-    #endregion
+    private List<Type> GetNonAbstractTypesSubclassOf<T>(bool sorted = true) where T : class
+    {
+        Type parentType = typeof(T);
+        Assembly assembly = Assembly.GetAssembly(parentType);
+
+        List<Type> types = assembly.GetTypes().Where(type => type.IsClass && !type.IsAbstract && type.IsSubclassOf(parentType)).ToList();
+
+        if (sorted)
+            types.Sort(CompareTypesNames);
+
+        return types;
+    }
+
+    private int CompareTypesNames(Type a, Type b)
+    {
+        return a.Name.CompareTo(b.Name);
+    }
 }
+
+#endregion

@@ -121,81 +121,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &622613148
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 622613150}
-  - component: {fileID: 622613149}
-  m_Layer: 0
-  m_Name: BaseCharacter 2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &622613149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622613148}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a825da1f77888ca439fdab152407384f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  settings:
-  - id: 0
-  - id: 1
-  - id: 2
-  - id: 3
-  references:
-    version: 1
-    00000000:
-      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 0
-        maxSpeed: 4.75
-        acceleration: 16
-        decelerationBoostWithRespectToAcceleration: 3
-        turnToAnyAxisSmoothness: 0.33
-    00000001:
-      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 1
-        damage: 10
-    00000002:
-      type: {class: RangedAttackActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 2
-        damage: 10
-        range: 10
-    00000003:
-      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 3
-        healQuantity: 10
-        removesDiseases: 1
---- !u!4 &622613150
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622613148}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -371,7 +296,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1809048441
+--- !u!1 &1974982487
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -379,22 +304,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1809048443}
-  - component: {fileID: 1809048442}
+  - component: {fileID: 1974982489}
+  - component: {fileID: 1974982488}
   m_Layer: 0
-  m_Name: BaseCharacter 1
+  m_Name: Warrior character 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1809048442
+--- !u!114 &1974982488
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1809048441}
+  m_GameObject: {fileID: 1974982487}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a825da1f77888ca439fdab152407384f, type: 3}
@@ -403,8 +328,6 @@ MonoBehaviour:
   settings:
   - id: 0
   - id: 1
-  - id: 2
-  - id: 3
   references:
     version: 1
     00000000:
@@ -420,25 +343,13 @@ MonoBehaviour:
       data:
         actionType: 1
         damage: 10
-    00000002:
-      type: {class: RangedAttackActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 2
-        damage: 10
-        range: 10
-    00000003:
-      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 3
-        healQuantity: 10
-        removesDiseases: 1
---- !u!4 &1809048443
+--- !u!4 &1974982489
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1809048441}
+  m_GameObject: {fileID: 1974982487}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
