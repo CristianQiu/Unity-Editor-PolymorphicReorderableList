@@ -328,6 +328,14 @@ MonoBehaviour:
   settings:
   - id: 0
   - id: 1
+  - id: 2
+  - id: 3
+  - id: 4
+  - id: 5
+  - id: 6
+  - id: 7
+  - id: 8
+  - id: 9
   references:
     version: 1
     00000000:
@@ -339,10 +347,63 @@ MonoBehaviour:
         decelerationBoostWithRespectToAcceleration: 3
         turnToAnyAxisSmoothness: 0.33
     00000001:
+      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 3
+        healQuantity: 10
+        removesDiseases: 1
+    00000002:
+      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 0
+        maxSpeed: 4.75
+        acceleration: 14.71
+        decelerationBoostWithRespectToAcceleration: 3
+        turnToAnyAxisSmoothness: 0.33
+    00000003:
       type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 1
         damage: 10
+    00000004:
+      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 0
+        maxSpeed: 4.75
+        acceleration: 16
+        decelerationBoostWithRespectToAcceleration: 3
+        turnToAnyAxisSmoothness: 0.33
+    00000005:
+      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 3
+        healQuantity: 10
+        removesDiseases: 1
+    00000006:
+      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 3
+        healQuantity: 10
+        removesDiseases: 1
+    00000007:
+      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 0
+        maxSpeed: 4.75
+        acceleration: 16
+        decelerationBoostWithRespectToAcceleration: 3
+        turnToAnyAxisSmoothness: 0.33
+    00000008:
+      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 1
+        damage: 10
+    00000009:
+      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 3
+        healQuantity: 24
+        removesDiseases: 1
 --- !u!4 &1974982489
 Transform:
   m_ObjectHideFlags: 0

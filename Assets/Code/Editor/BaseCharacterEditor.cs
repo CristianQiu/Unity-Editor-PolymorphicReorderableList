@@ -13,6 +13,12 @@ public class BaseCharacterEditor : Editor
     #region Private Attributes
 
     private const float AdditionalSpaceMultiplier = 1.0f;
+
+    private const float HeightHeader = 20.0f;
+    private const float MarginReorderIcon = 20.0f;
+    private const float ShrinkHeaderWidth = 15.0f;
+    private const float XShiftHeaders = 15.0f;
+
     private static readonly Color ProSkinTextColor = new Color(0.8f, 0.8f, 0.8f, 1.0f);
     private static readonly Color PersonalSkinTextColor = new Color(0.2f, 0.2f, 0.2f, 1.0f);
 
@@ -60,8 +66,6 @@ public class BaseCharacterEditor : Editor
     {
         serializedObject.Update();
 
-        DrawDefaultInspector();
-
         reordList.DoLayoutList();
 
         serializedObject.ApplyModifiedProperties();
@@ -88,28 +92,35 @@ public class BaseCharacterEditor : Editor
         SerializedProperty actionTypeParentProp = iteratorProp.FindPropertyRelative("actionType");
         string actionName = actionTypeParentProp.enumDisplayNames[actionTypeParentProp.enumValueIndex];
 
-        Rect labelRect = rect;
-        labelRect.height = 20.0f;
+        Rect labelfoldRect = rect;
+        labelfoldRect.height = HeightHeader;
+        labelfoldRect.x += XShiftHeaders;
+        labelfoldRect.width -= ShrinkHeaderWidth;
 
-        EditorGUI.LabelField(labelRect, actionName, headersStyle);
+        iteratorProp.isExpanded = EditorGUI.BeginFoldoutHeaderGroup(labelfoldRect, iteratorProp.isExpanded, actionName);
 
-        EditorGUI.indentLevel++;
-
-        SerializedProperty endProp = iteratorProp.GetEndProperty();
-
-        int i = 0;
-        while (iteratorProp.NextVisible(true) && !EqualContents(endProp, iteratorProp))
+        if (iteratorProp.isExpanded)
         {
-            float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
-            rect.y += GetDefaultSpaceBetweenElements() * multiplier;
-            rect.height = EditorGUIUtility.singleLineHeight;
+            EditorGUI.indentLevel++;
 
-            EditorGUI.PropertyField(rect, iteratorProp, true);
+            SerializedProperty endProp = iteratorProp.GetEndProperty();
 
-            i++;
+            int i = 0;
+            while (iteratorProp.NextVisible(true) && !EqualContents(endProp, iteratorProp))
+            {
+                float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
+                rect.y += GetDefaultSpaceBetweenElements() * multiplier;
+                rect.height = EditorGUIUtility.singleLineHeight;
+
+                EditorGUI.PropertyField(rect, iteratorProp, true);
+
+                i++;
+            }
+
+            EditorGUI.indentLevel--;
         }
 
-        EditorGUI.indentLevel--;
+        EditorGUI.EndFoldoutHeaderGroup();
     }
 
     private void OnDrawReorderListBg(Rect rect, int index, bool isActive, bool isFocused)
@@ -117,9 +128,28 @@ public class BaseCharacterEditor : Editor
         if (isFocused && isActive)
         {
             float height = OnReorderListElementHeight(index);
-            rect.height = height;
 
+            SerializedProperty prop = reordList.serializedProperty.GetArrayElementAtIndex(index);
+
+            // remove a bit of the line that goes beyond the header label
+            if (!prop.isExpanded)
+                height -= EditorGUIUtility.standardVerticalSpacing;
+
+            Rect copyRect = rect;
+            copyRect.width = MarginReorderIcon;
+            copyRect.height = height;
+
+            // draw two rects indepently to avoid overlapping the header label
             Color color = EditorGUIUtility.isProSkin ? ProSkinSelectionBgColor : PersonalSkinSelectionBgColor;
+            EditorGUI.DrawRect(copyRect, color);
+
+            float offset = 2.0f;
+            rect.x += MarginReorderIcon;
+            rect.width -= (MarginReorderIcon + offset);
+
+            rect.height = height - HeightHeader + offset;
+            rect.y += HeightHeader - offset;
+
             EditorGUI.DrawRect(rect, color);
         }
     }
@@ -135,6 +165,9 @@ public class BaseCharacterEditor : Editor
         SerializedProperty endProp = iteratorProp.GetEndProperty();
 
         float height = GetDefaultSpaceBetweenElements();
+
+        if (!iteratorProp.isExpanded)
+            return height;
 
         int i = 0;
         while (iteratorProp.NextVisible(true) && !EqualContents(endProp, iteratorProp))
@@ -159,6 +192,7 @@ public class BaseCharacterEditor : Editor
             string actionName = showTypes[i].Name;
             InsertSpaceBeforeCaps(ref actionName);
 
+            // TODO: if it is "unique", we must check what we already have to be on or not
             menu.AddItem(new GUIContent(actionName), false, OnAddItemFromDropdown, (object)type);
         }
 
