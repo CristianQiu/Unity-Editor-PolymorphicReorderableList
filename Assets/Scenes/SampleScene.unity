@@ -339,18 +339,6 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
-      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 3
-        healQuantity: 24
-        removesDiseases: 1
-    00000001:
-      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 3
-        healQuantity: 10
-        removesDiseases: 1
-    00000002:
       type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 0
@@ -358,13 +346,19 @@ MonoBehaviour:
         acceleration: 14.71
         decelerationBoostWithRespectToAcceleration: 3
         turnToAnyAxisSmoothness: 0.33
-    00000003:
+    00000001:
       type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 3
         healQuantity: 10
         removesDiseases: 1
-    00000004:
+    00000002:
+      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 3
+        healQuantity: 10
+        removesDiseases: 1
+    00000003:
       type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 0
@@ -372,17 +366,17 @@ MonoBehaviour:
         acceleration: 16
         decelerationBoostWithRespectToAcceleration: 3
         turnToAnyAxisSmoothness: 0.33
+    00000004:
+      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 1
+        damage: 10
     00000005:
       type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 1
         damage: 10
     00000006:
-      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 1
-        damage: 10
-    00000007:
       type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 0
@@ -390,13 +384,13 @@ MonoBehaviour:
         acceleration: 16
         decelerationBoostWithRespectToAcceleration: 3
         turnToAnyAxisSmoothness: 0.33
-    00000008:
+    00000007:
       type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 3
         healQuantity: 10
         removesDiseases: 1
-    00000009:
+    00000008:
       type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 0
@@ -404,6 +398,12 @@ MonoBehaviour:
         acceleration: 16
         decelerationBoostWithRespectToAcceleration: 3
         turnToAnyAxisSmoothness: 0.33
+    00000009:
+      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 3
+        healQuantity: 24
+        removesDiseases: 1
 --- !u!4 &1974982489
 Transform:
   m_ObjectHideFlags: 0
