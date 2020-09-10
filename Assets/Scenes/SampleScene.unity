@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -51,7 +51,7 @@ LightmapSettings:
     m_IndirectOutputScale: 1
     m_AlbedoBoost: 1
     m_EnvironmentLightingMode: 0
-    m_EnableBakedLightmaps: 1
+    m_EnableBakedLightmaps: 0
     m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
     serializedVersion: 12
@@ -97,7 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: bcaa61e8641dc484997613d166673a3b,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -121,6 +122,61 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &284712632
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 284712634}
+  - component: {fileID: 284712633}
+  m_Layer: 0
+  m_Name: Explorer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &284712633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284712632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29bdfc4df425d584da65a0aaf26c0900, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings:
+  - id: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 0
+        maxSpeed: 5
+        acceleration: 32
+        decelerationBoostWithRespectToAcceleration: 5
+        turnToAnyAxisSmoothness: 0.5
+--- !u!4 &284712634
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284712632}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,7 +245,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 1
+  m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -213,6 +269,74 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &830200981
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 830200983}
+  - component: {fileID: 830200982}
+  m_Layer: 0
+  m_Name: Warrior
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &830200982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830200981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a825da1f77888ca439fdab152407384f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings:
+  - id: 0
+  - id: 1
+  - id: 2
+  references:
+    version: 1
+    00000000:
+      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 0
+        maxSpeed: 3
+        acceleration: 8
+        decelerationBoostWithRespectToAcceleration: 2
+        turnToAnyAxisSmoothness: 0.2
+    00000001:
+      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 1
+        damage: 12
+    00000002:
+      type: {class: RangedAttackActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 2
+        damage: 12
+        range: 5
+--- !u!4 &830200983
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830200981}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,7 +420,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1974982487
+--- !u!1 &2059025710
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -304,48 +428,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1974982489}
-  - component: {fileID: 1974982488}
+  - component: {fileID: 2059025712}
+  - component: {fileID: 2059025711}
   m_Layer: 0
-  m_Name: Warrior character 1
+  m_Name: Healer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1974982488
+--- !u!114 &2059025711
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1974982487}
+  m_GameObject: {fileID: 2059025710}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a825da1f77888ca439fdab152407384f, type: 3}
+  m_Script: {fileID: 11500000, guid: b2b9ae2263440994fac027498c4e7e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
   - id: 0
   - id: 1
   - id: 2
-  - id: 3
-  - id: 4
-  - id: 5
-  - id: 6
-  - id: 7
-  - id: 8
-  - id: 9
   references:
     version: 1
     00000000:
       type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 0
-        maxSpeed: 4.75
-        acceleration: 14.71
-        decelerationBoostWithRespectToAcceleration: 3
-        turnToAnyAxisSmoothness: 0.33
+        maxSpeed: 4
+        acceleration: 12
+        decelerationBoostWithRespectToAcceleration: 2
+        turnToAnyAxisSmoothness: 0.3
     00000001:
       type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
       data:
@@ -353,68 +470,22 @@ MonoBehaviour:
         healQuantity: 10
         removesDiseases: 1
     00000002:
-      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
+      type: {class: RangedAttackActionSettings, ns: , asm: Assembly-CSharp}
       data:
-        actionType: 3
-        healQuantity: 10
-        removesDiseases: 1
-    00000003:
-      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 0
-        maxSpeed: 4.75
-        acceleration: 16
-        decelerationBoostWithRespectToAcceleration: 3
-        turnToAnyAxisSmoothness: 0.33
-    00000004:
-      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 1
-        damage: 10
-    00000005:
-      type: {class: MeleeAttackActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 1
-        damage: 10
-    00000006:
-      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 0
-        maxSpeed: 4.75
-        acceleration: 16
-        decelerationBoostWithRespectToAcceleration: 3
-        turnToAnyAxisSmoothness: 0.33
-    00000007:
-      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 3
-        healQuantity: 10
-        removesDiseases: 1
-    00000008:
-      type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 0
-        maxSpeed: 4.75
-        acceleration: 16
-        decelerationBoostWithRespectToAcceleration: 3
-        turnToAnyAxisSmoothness: 0.33
-    00000009:
-      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 3
-        healQuantity: 24
-        removesDiseases: 1
---- !u!4 &1974982489
+        actionType: 2
+        damage: 2
+        range: 8
+--- !u!4 &2059025712
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1974982487}
+  m_GameObject: {fileID: 2059025710}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

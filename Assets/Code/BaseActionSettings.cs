@@ -38,6 +38,18 @@ public class MovementActionSettings : BaseActionSettings
 }
 
 [Serializable]
+public class HealActionSettings : BaseActionSettings
+{
+    [SerializeField] private int healQuantity = 10;
+    [SerializeField] private bool removesDiseases = true;
+
+    public HealActionSettings() : base()
+    {
+        actionType = ActionType.Heal;
+    }
+}
+
+[Serializable]
 public class MeleeAttackActionSettings : BaseActionSettings
 {
     [SerializeField] private int damage = 10;
@@ -56,17 +68,5 @@ public class RangedAttackActionSettings : MeleeAttackActionSettings
     public RangedAttackActionSettings() : base()
     {
         actionType = ActionType.RangedAttack;
-    }
-}
-
-[Serializable]
-public class HealActionSettings : BaseActionSettings
-{
-    [SerializeField] private int healQuantity = 10;
-    [SerializeField] private bool removesDiseases = true;
-
-    public HealActionSettings() : base()
-    {
-        actionType = ActionType.Heal;
     }
 }

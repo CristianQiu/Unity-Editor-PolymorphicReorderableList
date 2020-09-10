@@ -2,6 +2,4 @@
 This is a Unity test project where I use the SerializeReference attribute to make a custom editor with a reorderable list of polymorphic, non Unity objects. 
 
 # Preview
-![alt-text](./GithubImgs/TeaserReorderGif.gif)
-
-![alt-text](./GithubImgs/TeaserAddDeleteGif.gif)
+![alt-text](./GithubImgs/TeaserGif.gif)
