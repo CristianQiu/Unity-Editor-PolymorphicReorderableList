@@ -456,6 +456,12 @@ MonoBehaviour:
   references:
     version: 1
     00000000:
+      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
+      data:
+        actionType: 3
+        healQuantity: 10
+        removesDiseases: 1
+    00000001:
       type: {class: MovementActionSettings, ns: , asm: Assembly-CSharp}
       data:
         actionType: 0
@@ -463,12 +469,6 @@ MonoBehaviour:
         acceleration: 12
         decelerationBoostWithRespectToAcceleration: 2
         turnToAnyAxisSmoothness: 0.3
-    00000001:
-      type: {class: HealActionSettings, ns: , asm: Assembly-CSharp}
-      data:
-        actionType: 3
-        healQuantity: 10
-        removesDiseases: 1
     00000002:
       type: {class: RangedAttackActionSettings, ns: , asm: Assembly-CSharp}
       data:
