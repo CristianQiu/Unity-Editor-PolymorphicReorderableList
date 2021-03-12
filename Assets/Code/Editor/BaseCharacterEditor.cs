@@ -25,8 +25,6 @@ public class BaseCharacterEditor : Editor
     private static readonly Color ProSkinSelectionBgColor = new Color(44.0f / 255.0f, 93.0f / 255.0f, 135.0f / 255.0f, 1.0f);
     private static readonly Color PersonalSkinSelectionBgColor = new Color(58.0f / 255.0f, 114.0f / 255.0f, 176.0f / 255.0f, 1.0f);
 
-    private BaseCharacter targetChar;
-
     private ReorderableList reordList;
 
     private GUIStyle headersStyle;
@@ -37,8 +35,6 @@ public class BaseCharacterEditor : Editor
 
     private void OnEnable()
     {
-        targetChar = (BaseCharacter)target;
-
         reordList = new ReorderableList(serializedObject, serializedObject.FindProperty("settings"), true, true, true, true);
 
         headersStyle = new GUIStyle();
