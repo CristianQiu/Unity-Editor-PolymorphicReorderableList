@@ -110,7 +110,7 @@ public class BaseCharacterEditor : Editor
 
                 EditorGUI.PropertyField(rect, iteratorProp, true);
 
-                i++;
+                ++i;
             }
 
             EditorGUI.indentLevel--;
@@ -170,7 +170,7 @@ public class BaseCharacterEditor : Editor
         {
             float multiplier = i == 0 ? AdditionalSpaceMultiplier : 1.0f;
             height += GetDefaultSpaceBetweenElements() * multiplier;
-            i++;
+            ++i;
         }
 
         return height;
@@ -181,7 +181,7 @@ public class BaseCharacterEditor : Editor
         GenericMenu menu = new GenericMenu();
         List<Type> showTypes = GetNonAbstractTypesSubclassOf<BaseActionSettings>();
 
-        for (int i = 0; i < showTypes.Count; i++)
+        for (int i = 0; i < showTypes.Count; ++i)
         {
             Type type = showTypes[i];
 
@@ -224,14 +224,14 @@ public class BaseCharacterEditor : Editor
 
     private void InsertSpaceBeforeCaps(ref string theString)
     {
-        for (int i = 0; i < theString.Length; i++)
+        for (int i = 0; i < theString.Length; ++i)
         {
             char currChar = theString[i];
 
             if (char.IsUpper(currChar))
             {
                 theString = theString.Insert(i, " ");
-                i++;
+                ++i;
             }
         }
     }
