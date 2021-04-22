@@ -12,6 +12,12 @@ public class BaseCharacterEditor : Editor
 {
     #region Private Attributes
 
+    private static readonly Color ProSkinTextColor = new Color(0.8f, 0.8f, 0.8f, 1.0f);
+    private static readonly Color PersonalSkinTextColor = new Color(0.2f, 0.2f, 0.2f, 1.0f);
+
+    private static readonly Color ProSkinSelectionBgColor = new Color(44.0f / 255.0f, 93.0f / 255.0f, 135.0f / 255.0f, 1.0f);
+    private static readonly Color PersonalSkinSelectionBgColor = new Color(58.0f / 255.0f, 114.0f / 255.0f, 176.0f / 255.0f, 1.0f);
+
     private const float AdditionalSpaceMultiplier = 1.0f;
 
     private const float HeightHeader = 20.0f;
@@ -19,15 +25,9 @@ public class BaseCharacterEditor : Editor
     private const float ShrinkHeaderWidth = 15.0f;
     private const float XShiftHeaders = 15.0f;
 
-    private static readonly Color ProSkinTextColor = new Color(0.8f, 0.8f, 0.8f, 1.0f);
-    private static readonly Color PersonalSkinTextColor = new Color(0.2f, 0.2f, 0.2f, 1.0f);
-
-    private static readonly Color ProSkinSelectionBgColor = new Color(44.0f / 255.0f, 93.0f / 255.0f, 135.0f / 255.0f, 1.0f);
-    private static readonly Color PersonalSkinSelectionBgColor = new Color(58.0f / 255.0f, 114.0f / 255.0f, 176.0f / 255.0f, 1.0f);
+    private GUIStyle headersStyle;
 
     private ReorderableList reordList;
-
-    private GUIStyle headersStyle;
 
     #endregion
 
@@ -35,13 +35,12 @@ public class BaseCharacterEditor : Editor
 
     private void OnEnable()
     {
-        reordList = new ReorderableList(serializedObject, serializedObject.FindProperty("settings"), true, true, true, true);
-
         headersStyle = new GUIStyle();
         headersStyle.alignment = TextAnchor.MiddleLeft;
         headersStyle.normal.textColor = EditorGUIUtility.isProSkin ? ProSkinTextColor : PersonalSkinTextColor;
         headersStyle.fontStyle = FontStyle.Bold;
 
+        reordList = new ReorderableList(serializedObject, serializedObject.FindProperty("settings"), true, true, true, true);
         reordList.drawHeaderCallback += OnDrawReorderListHeader;
         reordList.drawElementCallback += OnDrawReorderListElement;
         reordList.drawElementBackgroundCallback += OnDrawReorderListBg;
@@ -97,7 +96,7 @@ public class BaseCharacterEditor : Editor
 
         if (iteratorProp.isExpanded)
         {
-            EditorGUI.indentLevel++;
+            ++EditorGUI.indentLevel;
 
             SerializedProperty endProp = iteratorProp.GetEndProperty();
 
@@ -113,7 +112,7 @@ public class BaseCharacterEditor : Editor
                 ++i;
             }
 
-            EditorGUI.indentLevel--;
+            --EditorGUI.indentLevel;
         }
 
         EditorGUI.EndFoldoutHeaderGroup();
@@ -121,33 +120,33 @@ public class BaseCharacterEditor : Editor
 
     private void OnDrawReorderListBg(Rect rect, int index, bool isActive, bool isFocused)
     {
-        if (isFocused && isActive)
-        {
-            float height = OnReorderListElementHeight(index);
+        if (!isFocused || !isActive)
+            return;
 
-            SerializedProperty prop = reordList.serializedProperty.GetArrayElementAtIndex(index);
+        float height = OnReorderListElementHeight(index);
 
-            // remove a bit of the line that goes beyond the header label
-            if (!prop.isExpanded)
-                height -= EditorGUIUtility.standardVerticalSpacing;
+        SerializedProperty prop = reordList.serializedProperty.GetArrayElementAtIndex(index);
 
-            Rect copyRect = rect;
-            copyRect.width = MarginReorderIcon;
-            copyRect.height = height;
+        // remove a bit of the line that goes beyond the header label
+        if (!prop.isExpanded)
+            height -= EditorGUIUtility.standardVerticalSpacing;
 
-            // draw two rects indepently to avoid overlapping the header label
-            Color color = EditorGUIUtility.isProSkin ? ProSkinSelectionBgColor : PersonalSkinSelectionBgColor;
-            EditorGUI.DrawRect(copyRect, color);
+        Rect copyRect = rect;
+        copyRect.width = MarginReorderIcon;
+        copyRect.height = height;
 
-            float offset = 2.0f;
-            rect.x += MarginReorderIcon;
-            rect.width -= (MarginReorderIcon + offset);
+        // draw two rects indepently to avoid overlapping the header label
+        Color color = EditorGUIUtility.isProSkin ? ProSkinSelectionBgColor : PersonalSkinSelectionBgColor;
+        EditorGUI.DrawRect(copyRect, color);
 
-            rect.height = height - HeightHeader + offset;
-            rect.y += HeightHeader - offset;
+        float offset = 2.0f;
+        rect.x += MarginReorderIcon;
+        rect.width -= (MarginReorderIcon + offset);
 
-            EditorGUI.DrawRect(rect, color);
-        }
+        rect.height = height - HeightHeader + offset;
+        rect.y += HeightHeader - offset;
+
+        EditorGUI.DrawRect(rect, color);
     }
 
     private float OnReorderListElementHeight(int index)
@@ -184,11 +183,15 @@ public class BaseCharacterEditor : Editor
         for (int i = 0; i < showTypes.Count; ++i)
         {
             Type type = showTypes[i];
-
             string actionName = showTypes[i].Name;
-            InsertSpaceBeforeCaps(ref actionName);
 
-            // TODO: if it is "unique", we must check what we already have to be on or not
+            // UX improvement: If no elements are available the add button should be faded out or
+            // just not visible.
+            bool alreadyHasIt = DoesReordListHaveElementOfType(actionName);
+            if (alreadyHasIt)
+                continue;
+
+            InsertSpaceBeforeCaps(ref actionName);
             menu.AddItem(new GUIContent(actionName), false, OnAddItemFromDropdown, (object)type);
         }
 
@@ -217,11 +220,6 @@ public class BaseCharacterEditor : Editor
         return EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
     }
 
-    private bool EqualContents(SerializedProperty a, SerializedProperty b)
-    {
-        return SerializedProperty.EqualContents(a, b);
-    }
-
     private void InsertSpaceBeforeCaps(ref string theString)
     {
         for (int i = 0; i < theString.Length; ++i)
@@ -234,6 +232,11 @@ public class BaseCharacterEditor : Editor
                 ++i;
             }
         }
+    }
+
+    private bool EqualContents(SerializedProperty a, SerializedProperty b)
+    {
+        return SerializedProperty.EqualContents(a, b);
     }
 
     private List<Type> GetNonAbstractTypesSubclassOf<T>(bool sorted = true) where T : class
@@ -252,6 +255,18 @@ public class BaseCharacterEditor : Editor
     private int CompareTypesNames(Type a, Type b)
     {
         return a.Name.CompareTo(b.Name);
+    }
+
+    private bool DoesReordListHaveElementOfType(string type)
+    {
+        for (int i = 0; i < reordList.serializedProperty.arraySize; ++i)
+        {
+            // this works but feels ugly. Type in the array element looks like "managedReference<actualStringType>"
+            if (reordList.serializedProperty.GetArrayElementAtIndex(i).type.Contains(type))
+                return true;
+        }
+
+        return false;
     }
 }
 
